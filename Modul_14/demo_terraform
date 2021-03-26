@@ -1,0 +1,58 @@
+Demo Terraform
+
+Prerequests: Subscription Azure, Azure Cli installed Service principle created with Contributor role, application registred in subscription
+
+You need: ARM_CLIENT_ID="00000000-0000-0000-0000-000000000000", ARM_CLIENT_SECRET="00000000-0000-0000-0000-000000000000",
+ARM_SUBSCRIPTION_ID="00000000-0000-0000-0000-000000000000" and ARM_TENANT_ID="00000000-0000-0000-0000-000000000000"
+
+
+
+################## Sign in with Service Principle   ######################
+
+az login --service-principal -u http://azure-cli-2021-03-14-06-09-17 -p "nwrTJAW0Fhc4SPTOPVojJbpek6MhMGB0.e" --tenant "eb2228d8-3304-43cb-975b-9b282a8b5e86"
+
+################## Clone repository   ###################### 
+
+git clone https://github.com/easec/az-304
+
+################## Change directory   ###################### 
+
+cd az-304/Modul_1
+
+################## Init Terraform   ######################
+
+terraform init
+
+################## Check the code   ######################
+
+terraform plan
+
+################## Apply the code   ######################
+
+terraform apply
+
+################## Get public ip address   ######################
+
+az vm show --resource-group easecDemoRG --name easec-vmlinux -d --query [publicIps] -o tsv
+
+################## Connect to machine with ssh   ######################
+
+ssh azureuser@<public_ip-address>
+
+################## Disconnect from ssh   ######################
+
+exit
+
+################## Plan for removing   ######################
+
+terraform plan -destroy -out terraform_azure.tf.destroy.tfplan
+
+################## Removing resources   ######################
+
+terraform apply "terraform_azure.tf.destroy.tfplan"
+
+################## Clean up   ######################
+
+cd $HOME
+
+rm -rf az-304
