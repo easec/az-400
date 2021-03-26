@@ -1,0 +1,71 @@
+**************************** login  *********************************
+
+az login
+
+**************************** create resource group  *********************************
+
+az group create --name acrrg --location northeurope
+
+**************************** create acr  *********************************
+
+az acr create --resource-group acrrg --name easecregistry --sku Basic
+
+**************************** enable admin  *********************************
+
+az acr update -n easecregistry --admin-enabled true
+
+Note: If you need password, get it from your registry - Access key
+
+
+**************************** get docker image from Docker Hub  *********************************
+
+docker pull easec/php-webb
+
+**************************** tag image  *********************************
+
+docker tag easec/php-webb easecregistry.azurecr.io/php-webb:v1
+
+**************************** to list images on local registry  *********************************
+
+docker images
+
+**************************** log on  *********************************
+
+az acr login --name easecregistry
+
+Note: From Cloud Shell: az acr login -n <name_for_your_registry> --expose-token
+
+**************************** push to acr  *********************************
+
+docker push easecregistry.azurecr.io/php-webb:v1
+
+**************************** remove local image  *********************************
+
+docker rmi easecregistry.azurecr.io/php-webb:v1
+
+**************************** list content  *********************************
+
+az acr repository list --name easecregistry --output table
+
+**************************** run container based on image from acr  *********************************
+
+
+docker run -d -p 80:80 --name webb easecregistry.azurecr.io/php-webb:v1
+
+**************************** clean up  *********************************
+
+az group delete --name acrrg
+
+**************************** clean up local machine  *********************************
+
+docker stop webb
+
+docker rm webb
+
+docker rmi easecregistry.azurecr.io/php-webb:v1
+
+docker rmi easecphp-webb --force
+
+**************************** Note: login from Docker Client  *********************************
+
+docker login easecregistry.azurecr.io
